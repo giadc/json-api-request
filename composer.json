@@ -1,0 +1,24 @@
+{
+    "name": "giadc/json-api",
+    "description": "A package for handling JSON API requests and responses",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "David Hill",
+            "email": "dhill2@gannett.com"
+        },
+        {
+            "name": "Ryan Marganti",
+            "email": "rmarganti@gannett.com"
+        }
+    ],
+    "require": {
+        "laravel-doctrine/orm": "1.0.*",
+        "league/fractal": "^0.13.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Giadc\\JsonApi\\": "src/"
+        }
+    }
+}
