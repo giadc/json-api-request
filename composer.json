@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "laravel-doctrine/orm": "1.0.*",
+        "laravel-doctrine/orm": ">1.0.0",
         "league/fractal": "^0.13.0"
     },
     "autoload": {
