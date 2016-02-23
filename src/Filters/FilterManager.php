@@ -201,6 +201,70 @@ abstract class FilterManager
     }
 
     /**
+     * Build a `combined` filter
+     *
+     * @param  array        $data
+     * @param  array|string $keys
+     * @return void
+     */
+    private function combinedBuilder($data, $keys)
+    {
+        $info = $this->accepted[$keys];
+        $separator = isset($info['separator']) ? $info['separator'] : ' ';
+
+        $conditions = $this->buildCombinedConditions($data, $info['keys'], $separator);
+
+        $orX = $this->qb->expr()->orX();
+        $orX->addMultiple($conditions);
+        $this->qb->add('where', $orX);
+    }
+
+    /**
+     * Build a single `combined` condition
+     *
+     * @param  array  $data
+     * @param  array  $keys
+     * @param  string $separator
+     * @return void
+     */
+    private function buildCombinedConditions($data, $keys, $separator)
+    {
+        $concatArray = $this->getConcatArray($keys, $separator);
+        $concatFunction = new \Doctrine\ORM\Query\Expr\Func('CONCAT', $concatArray);
+
+        $conditions = [];
+
+        foreach ($data as $field) {
+            $conditions[] = $this->qb->expr()
+                ->like($concatFunction, '?' . $this->paramInt);
+
+            $this->setParameter($this->paramInt, '%' . $field . '%');
+        }
+
+        return $conditions;
+    }
+
+    /**
+     * Returns an array to be used with Doctrine's CONCAT function
+     *
+     * @param  array  $keys
+     * @param  string $separator
+     * @return array
+     */
+    private function getConcatArray($keys, $separator)
+    {
+        $concatArray = [];
+
+        foreach ($keys as $key) {
+            $concatArray[] = $this->getKey($key);
+            $concatArray[] = $this->qb->expr()->literal($separator);
+        }
+
+        array_pop($concatArray);
+        return $concatArray;
+    }
+
+    /**
      * @param $data
      * @param $key
      * @throws \Exception
