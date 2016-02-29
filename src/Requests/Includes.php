@@ -1,5 +1,5 @@
 <?php
-namespace Giadc\JsonApi\Requests;
+namespace Giadc\JsonApiRequest\Requests;
 
 class Includes
 {

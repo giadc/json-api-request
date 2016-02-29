@@ -1,5 +1,5 @@
 {
-    "name": "giadc/json-api",
+    "name": "giadc/json-api-request",
     "description": "A package for handling JSON API requests with Doctrine",
     "license": "MIT",
     "authors": [
@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Giadc\\JsonApi\\": "src/"
+            "Giadc\\JsonApiRequest\\": "src/"
         }
     }
 }

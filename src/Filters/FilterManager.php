@@ -1,9 +1,9 @@
 <?php
-namespace Giadc\JsonApi\Filters;
+namespace Giadc\JsonApiRequest\Filters;
 
 use Doctrine\ORM\QueryBuilder;
-use Giadc\JsonApi\Requests\Filters;
-use Giadc\JsonApi\Repositories\Processors;
+use Giadc\JsonApiRequest\Requests\Filters;
+use Giadc\JsonApiRequest\Repositories\Processors;
 
 /**
  * Class FilterManager

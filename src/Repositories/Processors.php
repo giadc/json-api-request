@@ -1,12 +1,12 @@
 <?php
-namespace Giadc\JsonApi\Repositories;
+namespace Giadc\JsonApiRequest\Repositories;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Giadc\JsonApi\Requests\Includes;
-use Giadc\JsonApi\Requests\Pagination;
-use Giadc\JsonApi\Requests\Sorting;
+use Giadc\JsonApiRequest\Requests\Includes;
+use Giadc\JsonApiRequest\Requests\Pagination;
+use Giadc\JsonApiRequest\Requests\Sorting;
 
 trait Processors
 {

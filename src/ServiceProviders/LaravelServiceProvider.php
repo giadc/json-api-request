@@ -1,10 +1,9 @@
 <?php
-
-namespace Giadc\JsonApi\ServiceProviders;
+namespace Giadc\JsonApiRequest\ServiceProviders;
 
 use Illuminate\Support\ServiceProvider;
 
-class LaravelJsonApiServiceProvider extends ServiceProvider
+class LaravelServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -23,8 +22,8 @@ class LaravelJsonApiServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(
-            'Giadc\JsonApi\Interfaces\AbstractJsonApiRepositoryInterface',
-            'Giadc\JsonApi\Repositories\AbstractJsonApiDoctrineRepository'
+            'Giadc\JsonApiRequest\Interfaces\AbstractJsonApiRepositoryInterface',
+            'Giadc\JsonApiRequest\Repositories\AbstractJsonApiDoctrineRepository'
         );
     }
 }

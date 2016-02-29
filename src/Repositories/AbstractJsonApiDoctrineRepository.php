@@ -4,11 +4,11 @@ namespace App\Common\Repositories;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Giadc\JsonApi\Repositories\Processors;
-use Giadc\JsonApi\Requests\Includes;
-use Giadc\JsonApi\Requests\Pagination;
-use Giadc\JsonApi\Requests\Sorting;
-use Giadc\JsonApi\Requests\Filters;
+use Giadc\JsonApiRequest\Repositories\Processors;
+use Giadc\JsonApiRequest\Requests\Includes;
+use Giadc\JsonApiRequest\Requests\Pagination;
+use Giadc\JsonApiRequest\Requests\Sorting;
+use Giadc\JsonApiRequest\Requests\Filters;
 
 abstract class AbstractJsonApiDoctrineRepository
 {

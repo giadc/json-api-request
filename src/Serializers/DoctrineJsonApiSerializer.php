@@ -1,5 +1,5 @@
 <?php
-namespace Giadc\JsonApi\Serializers;
+namespace Giadc\JsonApiRequest\Serializers;
 
 use ReflectionClass;
 use NilPortugues\Api\JsonApi\Http\Factory\RequestFactory;

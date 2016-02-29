@@ -1,10 +1,10 @@
 <?php
 namespace App\Common\Interfaces;
 
-use Giadc\JsonApi\Requests\Includes;
-use Giadc\JsonApi\Requests\Pagination;
-use Giadc\JsonApi\Requests\Sorting;
-use Giadc\JsonApi\Requests\Filters;
+use Giadc\JsonApiRequest\Requests\Includes;
+use Giadc\JsonApiRequest\Requests\Pagination;
+use Giadc\JsonApiRequest\Requests\Sorting;
+use Giadc\JsonApiRequest\Requests\Filters;
 
 interface AbstractJsonApiRepositoryInterface
 {
