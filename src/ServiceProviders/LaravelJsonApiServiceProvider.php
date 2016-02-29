@@ -23,11 +23,6 @@ class LaravelJsonApiServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(
-            'Giadc\JsonApi\Interfaces\ResponseContract',
-            'Giadc\JsonApi\Responses\LaravelResponse'
-        );
-
-        $this->app->bind(
             'Giadc\JsonApi\Interfaces\AbstractJsonApiRepositoryInterface',
             'Giadc\JsonApi\Repositories\AbstractJsonApiDoctrineRepository'
         );
