@@ -16,6 +16,5 @@ interface AbstractJsonApiRepositoryInterface
     public function add($entity);
     public function update($entity);
     public function delete($entity, $force = false);
-    public function enableFilters($options);
     public function flush();
 }
