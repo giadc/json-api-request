@@ -1,5 +1,5 @@
 <?php
-namespace App\Common\Repositories;
+namespace Giadc\JsonApiRequest\Repositories;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
@@ -149,32 +149,5 @@ abstract class AbstractJsonApiDoctrineRepository
     {
         if(!is_a($entity, $this->class))
             throw new \Exception('Invalid Entity: '.get_class($entity));
-    }
-
-    public function enableFilters( $options )
-    {
-        if( ! in_array('deleted', $options)){
-            $filter = $this->em->getConfiguration()->addFilter("deleted", "App\Common\Filters\DoctrineDeletedFilter");
-
-            $filter = $this->em->getFilters()->enable('deleted');
-        }
-
-        if( ! in_array('inactive', $options)){
-            $filter = $this->em->getConfiguration()->addFilter("active", "App\Common\Filters\DoctrineActiveFilter");
-
-            $filter = $this->em->getFilters()->enable('active');
-        }
-
-        if( in_array('showcase', $options)){
-            $filter = $this->em->getConfiguration()->addFilter("showcase", "App\Common\Filters\DoctrineShowcaseFilter");
-
-            $filter = $this->em->getFilters()->enable('showcase');
-        }
-
-        if( in_array('form', $options)){
-            $filter = $this->em->getConfiguration()->addFilter("form", "App\Common\Filters\DoctrineFormFilter");
-
-            $filter = $this->em->getFilters()->enable('form');
-        }
     }
 }

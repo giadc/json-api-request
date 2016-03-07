@@ -1,5 +1,5 @@
 <?php
-namespace App\Common\Interfaces;
+namespace Giadc\JsonApiRequest\Interfaces;
 
 use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
