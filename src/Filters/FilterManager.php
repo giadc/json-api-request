@@ -134,7 +134,7 @@ abstract class FilterManager
         $orX = $this->qb->expr()->orX();
         $orX->addMultiple($conditions);
 
-        $this->qb->add('where', $orX);
+        $this->qb->andWhere($orX);
         $this->setParameter($this->paramInt, $data);
     }
 
@@ -145,7 +145,7 @@ abstract class FilterManager
     private function buildSingle($data, $key)
     {
         if (is_array($data) && count($data) > 1) {
-            $this->qb->add('where', $this->qb->expr()->in($this->getKey($key), '?' . $this->paramInt));
+            $this->qb->andWhere($this->qb->expr()->in($this->getKey($key), '?' . $this->paramInt));
             $this->setParameter($this->paramInt, $data);
 
             return;
@@ -172,7 +172,7 @@ abstract class FilterManager
         $orX = $this->qb->expr()->orX();
         $orX->addMultiple($conditions);
 
-        $this->qb->add('where', $orX);
+        $this->qb->andWhere($orX);
     }
 
     private function buildMultipleConditions($data, $keys)
@@ -216,7 +216,7 @@ abstract class FilterManager
 
         $orX = $this->qb->expr()->orX();
         $orX->addMultiple($conditions);
-        $this->qb->add('where', $orX);
+        $this->qb->andWhere($orX);
     }
 
     /**
