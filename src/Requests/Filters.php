@@ -10,8 +10,17 @@ class Filters
         $filters = $filters ?: [];
 
         foreach ($filters as $key => $filter) {
-            $this->container[$key] = explode(',', $filter);
+            $this->addFilter($key, $filter);
         }
+    }
+
+    public function addFilter($key, $value)
+    {
+        if (is_string($value)) {
+            $value = explode(',', $value);
+        }
+
+        $this->container[$key] = $value;
     }
 
     public function toString()
@@ -19,8 +28,9 @@ class Filters
         $params = '';
 
         foreach ($this->container as $key => $filter) {
-            if( ! $params == '' )
+            if (!$params == '') {
                 $params .= '&';
+            }
 
             $params .= "filter[$key]=" . implode(',', $filter);
         };
@@ -40,8 +50,9 @@ class Filters
 
     public function toArray()
     {
-        if (is_null($this->container))
+        if (is_null($this->container)) {
             return [];
+        }
 
         return $this->container;
     }
