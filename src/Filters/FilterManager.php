@@ -2,8 +2,8 @@
 namespace Giadc\JsonApiRequest\Filters;
 
 use Doctrine\ORM\QueryBuilder;
-use Giadc\JsonApiRequest\Requests\Filters;
 use Giadc\JsonApiRequest\Repositories\Processors;
+use Giadc\JsonApiRequest\Requests\Filters;
 
 /**
  * Class FilterManager
@@ -78,9 +78,9 @@ abstract class FilterManager
      */
     private function processFilter($key, $data)
     {
-        $info = $this->accepted[$key];
-        $key = $this->getValidKey($info, $key);
-        $type = !array_key_exists('type', $info) ? 'id' : $info['type'];
+        $info   = $this->accepted[$key];
+        $key    = $this->getValidKey($info, $key);
+        $type   = !array_key_exists('type', $info) ? 'id' : $info['type'];
         $method = [$this, $type . 'Builder'];
 
         if (!is_callable($method)) {
@@ -190,7 +190,7 @@ abstract class FilterManager
     {
         $conditions = [];
 
-        foreach($data as $field) {
+        foreach ($data as $field) {
             $conditions[] = $this->qb->expr()
                 ->like($this->getKey($key), '?' . $this->paramInt);
 
@@ -209,7 +209,7 @@ abstract class FilterManager
      */
     private function combinedBuilder($data, $keys)
     {
-        $info = $this->accepted[$keys];
+        $info      = $this->accepted[$keys];
         $separator = isset($info['separator']) ? $info['separator'] : ' ';
 
         $conditions = $this->buildCombinedConditions($data, $info['keys'], $separator);
@@ -229,7 +229,7 @@ abstract class FilterManager
      */
     private function buildCombinedConditions($data, $keys, $separator)
     {
-        $concatArray = $this->getConcatArray($keys, $separator);
+        $concatArray    = $this->getConcatArray($keys, $separator);
         $concatFunction = new \Doctrine\ORM\Query\Expr\Func('CONCAT', $concatArray);
 
         $conditions = [];
@@ -271,29 +271,33 @@ abstract class FilterManager
      */
     private function dateBuilder($data, $keys)
     {
-        if (! is_array($keys))
-           return $this->qb->andWhere($this->buildSingleDate($data, $keys));
+        if (!is_array($keys)) {
+            return $this->qb->andWhere($this->buildSingleDate($data, $keys));
+        }
 
         $sql = '';
 
         foreach ($keys as $key) {
-            if (! $sql == '')
-                $sql.= ' OR ';
+            if (!$sql == '') {
+                $sql .= ' OR ';
+            }
+
             $sql .= $this->buildSingleDate($data, $key);
         }
 
-       return $this->qb->andWhere($sql);
+        return $this->qb->andWhere($sql);
     }
 
     private function buildSingleDate($data, $key)
     {
-        if (is_array($data))
+        if (is_array($data)) {
             $data = $data[0];
+        }
 
         $dates = explode('-', $data);
 
         if (count($dates) < 2) {
-            $now = new \DateTime();
+            $now      = new \DateTime();
             $dates[1] = $now->format('m/d/Y');
         }
 
@@ -317,7 +321,7 @@ abstract class FilterManager
     private function setParameter($key, $value)
     {
         $this->params[$key] = $value;
-        $this->paramInt = $this->paramInt + 1;
+        $this->paramInt     = $this->paramInt + 1;
     }
 
     /**
@@ -333,14 +337,15 @@ abstract class FilterManager
 
     private function addInclude($include)
     {
-        if (! $this->hasInclude($include))
+        if (!$this->hasInclude($include)) {
             throw new \Exception('Invalid Include: ' . $include);
+        }
 
-        if ($this->includeExists($include))
+        if ($this->includeExists($include)) {
             return;
+        }
 
         $this->qb->leftJoin('e.' . $include, $include);
-        $this->qb->addSelect($include);
     }
 
     private function includeExists($include)
