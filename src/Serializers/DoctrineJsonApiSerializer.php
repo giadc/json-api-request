@@ -1,11 +1,11 @@
 <?php
 namespace Giadc\JsonApiRequest\Serializers;
 
-use ReflectionClass;
 use NilPortugues\Api\JsonApi\Http\Factory\RequestFactory;
-use NilPortugues\Api\JsonApi\JsonApiTransformer;
 use NilPortugues\Api\JsonApi\Http\Request\Request;
-use NilPortugues\Serializer\DeepCopySerializer As Serializer;
+use NilPortugues\Api\JsonApi\JsonApiTransformer;
+use NilPortugues\Serializer\DeepCopySerializer as Serializer;
+use ReflectionClass;
 
 /**
  * Class DoctrineJsonApiSerializer.
@@ -48,7 +48,7 @@ class DoctrineJsonApiSerializer extends Serializer
      *
      * @throws SerializerException
      */
-     protected function serializeData($value)
+    protected function serializeData($value)
     {
         if ($value instanceof \Doctrine\ORM\PersistentCollection) {
             $value = $value->isInitialized() ? $value->toArray() : null;
@@ -58,7 +58,7 @@ class DoctrineJsonApiSerializer extends Serializer
             $value = $value->getIterator()->getArrayCopy();
         }
 
-        if (! $value instanceof \Doctrine\ORM\Proxy\Proxy && ! $value instanceof \Doctrine\ORM\EntityManager) {
+        if (!$value instanceof \Doctrine\ORM\Proxy\Proxy && !$value instanceof \Doctrine\ORM\EntityManager) {
             return parent::serializeData($value);
         }
     }
@@ -91,7 +91,9 @@ class DoctrineJsonApiSerializer extends Serializer
         if ($include = $request->getIncludedRelationships()) {
             foreach ($include as $resource => $includeData) {
 
-                if ($this->serializationStrategy->getMappingByAlias($resource) == null) continue;
+                if ($this->serializationStrategy->getMappingByAlias($resource) == null) {
+                    continue;
+                }
 
                 foreach ($this->serializationStrategy->getMappings() as $mapping) {
                     $mapping->filteringIncludedResources(true);

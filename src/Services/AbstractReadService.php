@@ -175,5 +175,4 @@ abstract class AbstractReadService
 
         return $jsonEncodedObject;
     }
-
 }

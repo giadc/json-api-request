@@ -5,29 +5,43 @@ class Sorting
 {
     private $container = array();
 
-    public function __construct($sort)
+    public function __construct($sorting)
     {
-        $this->setSorting($sort);
+        $this->setSorting($sorting);
     }
 
-    public function setSorting($sort)
+    /**
+     * Set the sorting
+     *
+     * @param string $sorting
+     */
+    public function setSorting($sorting)
     {
-        if (empty($sort) && !is_string($sort))
+        $this->container = [];
+
+        if (empty($sorting) && !is_string($sorting)) {
             return;
+        }
 
-        $fields = \explode(',', $sort);
+        $fields = \explode(',', $sorting);
 
-        if (!empty($fields))
-            $this->processFields($fields);        
+        if (!empty($fields)) {
+            $this->processFields($fields);
+        }
     }
 
+    /**
+     * Process an individual field
+     *
+     * @param  array $fields
+     */
     private function processFields($fields)
     {
         foreach ($fields as &$field) {
             $direction = 'ASC';
 
             if ('-' === $field[0]) {
-                $field = \ltrim($field, '-');
+                $field     = \ltrim($field, '-');
                 $direction = 'DESC';
             }
 
@@ -35,49 +49,64 @@ class Sorting
         }
     }
 
+    /**
+     * Get Sorting as an array
+     *
+     * @return array
+     */
     public function toArray()
     {
-        if (is_null($this->container))
+        if (is_null($this->container)) {
             return [];
+        }
 
         return $this->container;
     }
 
+    /**
+     * Get Sorting as a params array
+     *
+     * @return array
+     */
     public function getParamsArray()
     {
-        if ($this->container == null || (count($this->container) == 1 && $this->container[0] == null))
+        if ($this->container == null || (count($this->container) == 1 && $this->container[0] == null)) {
             return [];
+        }
 
-        $sortParams = $this->toString();
+        $sortingParams = $this->toString();
 
         return [
-            'sort' => $sortParams,
+            'sort' => $sortingParams,
         ];
     }
 
+    /**
+     * Get Sorting as a query string fragment
+     *
+     * @return string
+     */
     public function getQueryString()
     {
-        if (count(array_filter($this->container)) == 0)
+        if (count(array_filter($this->container)) == 0) {
             return '';
+        }
 
         return 'sort=' . $this->toString();
     }
 
+    /**
+     * Get Sorting as a comma-separated list
+     *
+     * @return string
+     */
     private function toString()
     {
-        $temp = '';
-        $fields = $this->container;
+        $fields = array_map(function ($field) {
+            $prefix = ($field['direction'] === 'DESC') ? '-' : '';
+            return $prefix . $field['field'];
+        }, $this->container);
 
-        foreach ($fields as $key => &$field) {
-            if ($field['direction'] === 'DESC')
-                $temp.= '-';
-
-            $temp .= $field['field'];
-
-            if (! count($fields) == $key + 1 && count($fields) > 1)
-                $temp .= ',';
-        }
-
-        return $temp;
+        return implode(',', $fields);
     }
 }
