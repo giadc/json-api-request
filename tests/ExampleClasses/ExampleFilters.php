@@ -1,5 +1,7 @@
 <?php
 
+namespace Giadc\JsonApiRequest\Tests;
+
 use Giadc\JsonApiRequest\Filters\FilterManager;
 
 class ExampleFilters extends FilterManager

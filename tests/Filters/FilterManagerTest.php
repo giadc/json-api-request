@@ -1,9 +1,8 @@
 <?php
 
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Giadc\JsonApiRequest\Requests\Filters;
-use Mockery as m;
+use Giadc\JsonApiRequest\Tests\ExampleFilters;
 
 class FilterManagerTest extends PHPUnit_Framework_TestCase
 {
@@ -19,7 +18,7 @@ class FilterManagerTest extends PHPUnit_Framework_TestCase
 
     public function test_it_processes_the_filters()
     {
-        $entityManager = $this->createEntityManager();
+        $entityManager = EntityManagerFactory::createEntityManager();
         $qb            = $entityManager->createQueryBuilder();
 
         $qb->select('e')->from('App\Entities\Entity', 'e');
@@ -52,25 +51,5 @@ class FilterManagerTest extends PHPUnit_Framework_TestCase
             '2020-02-02 23:59:59',
         ];
         $this->assertEquals($expectedParmArray, $paramArray);
-    }
-
-    /**
-     * Create an EntityManager
-     *
-     * @return EntityManger
-     */
-    private function createEntityManager()
-    {
-        $paths            = ['Entities'];
-        $isDevMode        = true;
-        $connectionConfig = [
-            'driver'   => 'pdo_sqlite',
-            'database' => ':memory:',
-            'prefix'   => '',
-        ];
-
-        $config = Setup::createYAMLMetadataConfiguration($paths, $isDevMode);
-
-        return EntityManager::create($connectionConfig, $config);
     }
 }

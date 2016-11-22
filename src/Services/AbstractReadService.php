@@ -40,7 +40,7 @@ abstract class AbstractReadService
      * @param  array $additionalIncludes
      * @return mixed
      */
-    public function findById($id, $additionalIncludes = null)
+    public function findById($id, $additionalIncludes = [])
     {
         $includes = $this->requestParams->getIncludes();
 
@@ -88,7 +88,7 @@ abstract class AbstractReadService
      * @param  array  $additionalIncludes
      * @return mixed
      */
-    public function findByField($field, $value, $additionalIncludes = [])
+    public function findByField($value, $field = 'id', $additionalIncludes = [])
     {
         $includes = $this->requestParams->getIncludes();
 
@@ -96,7 +96,7 @@ abstract class AbstractReadService
             $includes->add($additionalIncludes);
         }
 
-        return $this->repo->findByColumn($field, $value, $includes);
+        return $this->repo->findByField($value, $field, $includes);
     }
 
     /**
@@ -106,13 +106,11 @@ abstract class AbstractReadService
      * @param  array $additionalIncludes
      * @return array
      */
-    public function paginate($additionalIncludes = null)
+    public function paginate($additionalIncludes = [])
     {
         list($page, $includes, $sort, $filters) = $this->requestParams->getFullPagination();
 
-        if (is_array($additionalIncludes)) {
-            $includes->add($additionalIncludes);
-        }
+        $includes->add($additionalIncludes);
 
         return $this->repo->paginateAll($page, $includes, $sort, $filters);
     }
@@ -123,35 +121,13 @@ abstract class AbstractReadService
      * @param  array $additionalIncludes
      * @return array
      */
-    public function all($additionalIncludes = null)
+    public function all($additionalIncludes = [])
     {
         list(, $includes, $sort, $filters) = $this->requestParams->getFullPagination();
 
         $includes->add($additionalIncludes);
 
         return $this->repo->all($includes, $sort, $filters);
-    }
-
-    /**
-     * Get a JSON API Collection string
-     *
-     * @param  array           $data
-     * @param  callable|string $transformer
-     * @param  string          $resourceKey
-     * @param  array           $includes
-     * @return string
-     */
-    public function getCollectionJson($data, $transformer, $resourceKey, $includes = [])
-    {
-        $resource = new Collection($data, $transformer, $resourceKey);
-        $manager  = new Manager;
-
-        $manager->setSerializer(new JsonApiSerializer());
-        $manager->parseIncludes($includes);
-
-        $jsonEncodedObject = $manager->createData($resource)->toJson();
-
-        return str_replace("'", "&lsquo;", $jsonEncodedObject);
     }
 
     /**
@@ -174,5 +150,27 @@ abstract class AbstractReadService
         $jsonEncodedObject = $manager->createData($resource)->toJson();
 
         return $jsonEncodedObject;
+    }
+
+    /**
+     * Get a JSON API Collection string
+     *
+     * @param  array           $data
+     * @param  callable|string $transformer
+     * @param  string          $resourceKey
+     * @param  array           $includes
+     * @return string
+     */
+    public function getCollectionJson($data, $transformer, $resourceKey, $includes = [])
+    {
+        $resource = new Collection($data, $transformer, $resourceKey);
+        $manager  = new Manager;
+
+        $manager->setSerializer(new JsonApiSerializer());
+        $manager->parseIncludes($includes);
+
+        $jsonEncodedObject = $manager->createData($resource)->toJson();
+
+        return str_replace("'", "&lsquo;", $jsonEncodedObject);
     }
 }
