@@ -96,6 +96,15 @@ abstract class AbstractJsonApiDoctrineRepository
         return new ArrayCollection($qb->getQuery()->getResult());
     }
 
+    // Mapped to findByField for backwards compatibility. will remove next version number
+    public function findByColumn($field, $value, Includes $includes = null)
+    {
+        if ($includes instanceof Includes)
+            return $this->findByField($value, $field, $includes);
+
+        return $this->findByField($value, $field);
+    }
+
     /**
      * Find enties by an array of field values
      *
