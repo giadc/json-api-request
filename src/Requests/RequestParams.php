@@ -11,7 +11,7 @@ class RequestParams
 {
     private $request;
 
-    public function __construct(Request $request = null)
+    public function __construct($request = null)
     {
         $this->request = (is_null($request))
             ? Request::createFromGlobals()
