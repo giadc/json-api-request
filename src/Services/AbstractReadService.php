@@ -2,6 +2,7 @@
 
 namespace Giadc\JsonApiRequest\Services;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Giadc\JsonApiRequest\Requests\RequestParams;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
@@ -68,7 +69,7 @@ abstract class AbstractReadService
     public function findByArray($array, $field = 'id', $additionalIncludes = [])
     {
         if (empty($array)) {
-            return [];
+            return new ArrayCollection();
         }
 
         $includes = $this->requestParams->getIncludes();

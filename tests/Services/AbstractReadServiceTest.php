@@ -40,6 +40,13 @@ class AbstractReadServiceTest extends JsonApiRequestTestCase
         $this->assertTrue($result->first()->getRelationships()->isInitialized());
     }
 
+    public function test_it_returns_an_empty_array_collection_if_findByArray_is_called_with_an_empty_array()
+    {
+        $result = $this->exampleReadService->findByArray([], 'id');
+        $this->assertInstanceOf(ArrayCollection::class, $result);
+        $this->assertEquals([], $result->toArray());
+    }
+
     public function test_it_finds_entities_by_field()
     {
         $result = $this->exampleReadService->findByField(10, 'width', ['relationships']);
