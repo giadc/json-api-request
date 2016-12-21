@@ -2,15 +2,15 @@
 namespace Giadc\JsonApiRequest\Filters;
 
 use Doctrine\ORM\QueryBuilder;
-use Giadc\JsonApiRequest\Repositories\Processors;
+use Giadc\JsonApiRequest\Repositories\DoctrineProcessors;
 use Giadc\JsonApiRequest\Requests\Filters;
 
 /**
- * Class FilterManager
+ * Class DoctrineFilterMangaer
  */
-abstract class FilterManager
+abstract class DoctrineFilterMangaer
 {
-    use Processors;
+    use DoctrineProcessors;
 
     /**
      * @var array

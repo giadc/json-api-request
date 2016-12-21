@@ -82,12 +82,12 @@ $bananaReadService->paginate($includes = []);
 
 namespace App\Bananas\Filters;
 
-use Giadc\JsonApiRequest\Filters\FilterManager;
+use Giadc\JsonApiRequest\Filters\DoctrineFilterManager;
 
 /**
  * Class BananaFilters
  */
-class BananaFilter extends FilterManager
+class BananaFilter extends DoctrineFilterManager
 {
     /**
      * @var array

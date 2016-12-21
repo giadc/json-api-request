@@ -7,7 +7,7 @@ use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
 use Giadc\JsonApiRequest\Requests\Sorting;
 
-trait Processors
+trait DoctrineProcessors
 {
     /**
      * Add SELECT and LEFT JOIN statements for all includes
@@ -18,9 +18,7 @@ trait Processors
      */
     protected function processIncludes(QueryBuilder $qb, Includes $includes)
     {
-        $includes = $includes->toArray();
-
-        foreach ($includes as $include) {
+        foreach ($includes->toArray() as $include) {
             if (!$this->hasAssociation($include) || $this->includeExists($qb, $include)) {
                 continue;
             }

@@ -2,9 +2,9 @@
 
 namespace Giadc\JsonApiRequest\Tests;
 
-use Giadc\JsonApiRequest\Filters\FilterManager;
+use Giadc\JsonApiRequest\Filters\DoctrineFilterManager;
 
-class ExampleFilters extends FilterManager
+class ExampleFilters extends DoctrineFilterManager
 {
     /**
      * @var array

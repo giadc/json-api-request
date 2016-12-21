@@ -2,7 +2,7 @@
 namespace Giadc\JsonApiRequest\Repositories;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Giadc\JsonApiRequest\Repositories\Processors;
+use Giadc\JsonApiRequest\Repositories\DoctrineProcessors;
 use Giadc\JsonApiRequest\Requests\Filters;
 use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
@@ -10,17 +10,9 @@ use Giadc\JsonApiRequest\Requests\Sorting;
 
 abstract class AbstractJsonApiDoctrineRepository
 {
-    use Processors;
+    use DoctrineProcessors;
 
     protected $class;
-
-    protected function logDql()
-    {
-        $this->em
-            ->getConnection()
-            ->getConfiguration()
-            ->setSQLLogger(new \Doctrine\DBAL\Logging\EchoSQLLogger());
-    }
 
     /**
      * Get the default Sorting for the repository
@@ -96,15 +88,6 @@ abstract class AbstractJsonApiDoctrineRepository
         return new ArrayCollection($qb->getQuery()->getResult());
     }
 
-    // Mapped to findByField for backwards compatibility. will remove next version number
-    public function findByColumn($field, $value, Includes $includes = null)
-    {
-        if ($includes instanceof Includes)
-            return $this->findByField($value, $field, $includes);
-
-        return $this->findByField($value, $field);
-    }
-
     /**
      * Find enties by an array of field values
      *
@@ -125,23 +108,6 @@ abstract class AbstractJsonApiDoctrineRepository
         }
 
         return new ArrayCollection($qb->getQuery()->getResult());
-    }
-
-    /**
-     * Flush pending changes to the database
-     */
-    public function flush()
-    {
-        $this->em->flush();
-    }
-
-    /**
-     * Clears the EntityManager. All entities that are currently managed
-     * by this EntityManager become detached.
-     */
-    public function clear()
-    {
-        $this->em->clear();
     }
 
     /**
@@ -216,6 +182,23 @@ abstract class AbstractJsonApiDoctrineRepository
     }
 
     /**
+     * Flush pending changes to the database
+     */
+    public function flush()
+    {
+        $this->em->flush();
+    }
+
+    /**
+     * Clears the EntityManager. All entities that are currently managed
+     * by this EntityManager become detached.
+     */
+    public function clear()
+    {
+        $this->em->clear();
+    }
+
+    /**
      * Is the given Entity a valid member of this Repository
      *
      * @param  mixed $entity
@@ -227,4 +210,5 @@ abstract class AbstractJsonApiDoctrineRepository
             throw new \Exception('Invalid Entity: ' . get_class($entity));
         }
     }
+
 }
