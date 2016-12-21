@@ -105,5 +105,4 @@ class Pagination
     {
         return getenv('PAGINATION_MAX') ?: 25;
     }
-
 }
