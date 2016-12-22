@@ -14,23 +14,19 @@ class RequestParamsTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $query = m::mock(ParameterBag::class)
-            ->shouldReceive('get')->with('include')->andReturn('one,two')
-            ->shouldReceive('get')->with('page')->andReturn(['number' => 1, 'size' => 20])
-            ->shouldReceive('get')->with('sort')->andReturn('width,-height')
-            ->shouldReceive('get')->with('filter')->andReturn(['banana' => 'hammock'])
-            ->getMock();
-
-        $request = m::mock(Request::class);
-
-        $request->query = $query;
+        $request = Request::create('http://test.com/articles'
+            . '?include=author,comments.author'
+            . '&page[number]=3&page[size]=20'
+            . '&filter[author]=frank'
+            . '&sort=-created,title'
+        );
 
         $this->requestParams = new RequestParams($request);
     }
 
     public function test_it_returns_the_includes()
     {
-        $expected = ['one', 'two'];
+        $expected = ['author', 'comments.author'];
         $includes = $this->requestParams->getIncludes();
 
         $this->assertInstanceOf(Includes::class, $includes);
@@ -39,19 +35,18 @@ class RequestParamsTest extends PHPUnit_Framework_TestCase
 
     public function test_it_returns_the_pagination()
     {
-        $expected   = ['one', 'two'];
         $pagination = $this->requestParams->getPageDetails();
 
         $this->assertInstanceOf(Pagination::class, $pagination);
-        $this->assertEquals(1, $pagination->getPageNumber());
+        $this->assertEquals(3, $pagination->getPageNumber());
         $this->assertEquals(20, $pagination->getPageSize());
     }
 
     public function test_it_returns_the_sorting()
     {
         $expected = [
-            ['field' => 'width', 'direction' => 'ASC'],
-            ['field' => 'height', 'direction' => 'DESC'],
+            ['field' => 'created', 'direction' => 'DESC'],
+            ['field' => 'title', 'direction' => 'ASC'],
         ];
 
         $sorting = $this->requestParams->getSortDetails();
@@ -62,7 +57,7 @@ class RequestParamsTest extends PHPUnit_Framework_TestCase
 
     public function test_it_returns_the_filters()
     {
-        $expected = ['banana' => ['hammock']];
+        $expected = ['author' => ['frank']];
         $filters  = $this->requestParams->getFiltersDetails();
 
         $this->assertInstanceOf(Filters::class, $filters);

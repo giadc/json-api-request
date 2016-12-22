@@ -1,7 +1,7 @@
 <?php
 namespace Giadc\JsonApiRequest\Requests;
 
-class Pagination
+class Pagination implements RequestInterface
 {
     /** @var int */
     private $number;

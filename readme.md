@@ -1,6 +1,5 @@
 # JSON API Request
-A package for automating pagination, filtering, sorting, and includes when working with 
-[Doctrine](http://www.doctrine-project.org/) and the [JSON API](http://jsonapi.org/) standard.
+A package for automating pagination, filtering, sorting, and includes when working with the [JSON API](http://jsonapi.org/) standard.
 
 
 ## Installation
@@ -8,93 +7,75 @@ A package for automating pagination, filtering, sorting, and includes when worki
 
 
 ## Basic Usage
+### RequestParams
+Request Params provides objects for pulling/modifying HttpFoundation Requests that compile with JSON API V1.0.
 
-### Repository Skeleton
+Example: 
+```http
+GET /articles?include=author,comments.author&page[number]=3&page[size]=20&filter[author]=frank&sort=-created,title
+```
 ```php
-<?php
-namespace App\Bananas\Repositories;
+use Giadc\JsonApiRequest\Requests\RequestParams;
 
-use App\Bananas\Banana;
-use App\Bananas\Filters\BananaFilter;
-use App\Bananas\Repositories\BananaRepositoryInterface;
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use Giadc\JsonApiRequest\Interfaces\AbstractJsonApiRepositoryInterface as JsonApiInterface;
-use Giadc\JsonApiRequest\Repositories\AbstractJsonApiDoctrineRepository as JsonApiRepository;
+// By default it creates params from Globals 
+$request = new RequestParams;
 
-class RoleDoctrineRepository extends JsonApiRepository implements
-JsonApiInterface,
-RoleRepositoryInterface
-{
-    /** @var EntityManager */
-    protected $em;
+// Get Includes
+$request->getIncludes()->toArray();
+// outputs: ['author', 'comments.author']
 
-    /** @var string */
-    protected $class;
-    
-    /** @var BananaFilter **/
-    protected $filters;
+// Get Page Details
+$request->getPageDetails()->toArray();
+// outputs: ['page' => ['number => 3, 'size' => 20]]
 
-    /**
-     * Create a new BananaDoctrineRepository
-     *
-     * @param EntityManager $em
-     * @param BananaFilters $filters
-     * @return void
-     */
-    public function __construct(EntityManager $em, BananaFilter $filters)
-    {
-        $this->em      = $em;
-        $this->class   = Role::class;
-        $this->filters = $filters;
-    }
-}
+// Get Sorting
+$request->getSortDetails()->toArray();
+// outputs: [['field' => 'title', 'direction' => 'ASC'], ['field' => 'created', 'direction' => 'DESC']]
+
+// Get Filters
+$request->getFiltersDetails()->toArray();
+// outputs: ['author' => ['frank']]
+
+// Get Full Pagination
+$request->getFullPagination();
+// outputs: [{Pagination}, {Includes}, {Sorting}, {Filters}]
 ```
 
-### Read Service Skeleton
+### Request Objects
+All Objects implements the RequestInterface and give access the following methods: `getParamsArray()`, `getQueryString()`
+#### Includes
 ```php
-<?php
-namespace App\Bananas\Services;
-
-use App\Common\Services\AbstractReadService;
-use App\Bananas\Repositories\BananaRepositoryInterface as BananaRepo;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
-class RoleReadService extends AbstractReadService
-{
-    public function __construct(
-        BananaRepo $bananaRepo
-    ) {
-        $this->initialize($bananaRepo, 'Banana');
-    }
+$includes = new Includes(['author', 'comments.author');
+$includes->add('site');
+$includes->getQueryString();
+//outputs: 'include=author,comments.author,site'
 ```
 
-### Using the Read Service
+#### Pagination
+Pagination sets a defaults the pages size if not provided. It will Also allow you to set max it is able to return by settings the `PAGINATION_DEFAULT` and `PAGINATION_MAX` env variables.
 ```php
-$bananaReadService->findById('id123', $includes = []);
-$bananaReadService->findByArray(['id123', 'id456'], 'id', $includes = []);
-$bananaReadService->findByField('name', 'Chiquita');
-$bananaReadService->paginate($includes = []);
+$pagination = new Pagination(2, 20);
+$pagination->getQueryString();
+//outputs: 'page[number]=2&page[size]=20'
+
+// PAGINATION_MAX=25
+$pagination = new Pagination(2, 1000);
+$pagination->getQueryString();
+//outputs: 'page[number]=2&page[size]=25'
 ```
 
-### Filters Skeleton
+#### Sorting
 ```php
-<?php
+$sorting = new Sorting('-created,title');
+$sorting->setSorting();
+$sorting->getQueryString('created,-title');
+//outputs: 'sort=created,title'
+```
 
-namespace App\Bananas\Filters;
-
-use Giadc\JsonApiRequest\Filters\DoctrineFilterManager;
-
-/**
- * Class BananaFilters
- */
-class BananaFilter extends DoctrineFilterManager
-{
-    /**
-     * @var array
-     */
-    protected $accepted = [
-        'id'    => ['type' => 'id'],      // id must match exactly
-        'name' => ['type' => 'keyword'], // keyword will match fuzzily
-    ];
-}
+#### Filters
+```php
+$filters = new Filters(['author' => 'frank');
+$filters->addFilter('author', 'bob');
+$filters->getQueryString();
+//outputs: 'filter[author]=frank,bob'
 ```

@@ -1,7 +1,7 @@
 <?php
 namespace Giadc\JsonApiRequest\Requests;
 
-class Sorting
+class Sorting implements RequestInterface
 {
     private $container = array();
 

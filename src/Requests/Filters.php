@@ -1,7 +1,7 @@
 <?php
 namespace Giadc\JsonApiRequest\Requests;
 
-class Filters
+class Filters implements RequestInterface
 {
     private $container = array();
 

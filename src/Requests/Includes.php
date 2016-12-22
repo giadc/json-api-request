@@ -1,7 +1,7 @@
 <?php
 namespace Giadc\JsonApiRequest\Requests;
 
-class Includes
+class Includes implements RequestInterface
 {
     private $container = array();
 
