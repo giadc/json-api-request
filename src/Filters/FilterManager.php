@@ -2,6 +2,7 @@
 namespace Giadc\JsonApiRequest\Filters;
 
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query\Expr\Composite;
 use Giadc\JsonApiRequest\Repositories\Processors;
 use Giadc\JsonApiRequest\Requests\Filters;
 
@@ -11,6 +12,9 @@ use Giadc\JsonApiRequest\Requests\Filters;
 abstract class FilterManager
 {
     use Processors;
+
+    const BOOLEAN_AND = 'BOOLEAN_AND';
+    const BOOLEAN_OR  = 'BOOLEAN_OR';
 
     /**
      * @var array
@@ -78,16 +82,17 @@ abstract class FilterManager
      */
     private function processFilter($key, $data)
     {
-        $info   = $this->accepted[$key];
-        $key    = $this->getValidKey($info, $key);
-        $type   = !array_key_exists('type', $info) ? 'id' : $info['type'];
-        $method = [$this, $type . 'Builder'];
+        $info              = $this->accepted[$key];
+        $booleanExpression = $this->buildBooleanExpression($key);
+        $key               = $this->getValidKey($info, $key);
+        $type              = !array_key_exists('type', $info) ? 'id' : $info['type'];
+        $method            = [$this, $type . 'Builder'];
 
         if (!is_callable($method)) {
             throw new \Exception('Invalid Type');
         }
 
-        call_user_func($method, $data, $key);
+        call_user_func($method, $data, $key, $booleanExpression);
     }
 
     private function getValidKey($info, $key)
@@ -99,15 +104,21 @@ abstract class FilterManager
      * @param $data
      * @param $key
      */
-    private function idBuilder($data, $key)
+    private function idBuilder($data, $key, Composite $booleanExpression)
     {
         if (is_array($key)) {
-            $this->buildMultiple($data, $key);
+            $this->buildMultiple($data, $key, $booleanExpression);
         } else {
-            $this->buildSingle($data, $key);
+            $this->buildSingle($data, $key, $booleanExpression);
         }
     }
 
+    /**
+     * Get the SQL key to use
+     *
+     * @param  string $key
+     * @return string
+     */
     private function getKey($key)
     {
         if (strpos($key, ".") !== false) {
@@ -122,7 +133,7 @@ abstract class FilterManager
      * @param $data
      * @param $keys
      */
-    private function buildMultiple($data, $keys)
+    private function buildMultiple($data, $keys, Composite $booleanExpression)
     {
         $conditions = [];
 
@@ -131,10 +142,9 @@ abstract class FilterManager
                 ->in($this->getKey($field), '?' . $this->paramInt);
         }
 
-        $orX = $this->qb->expr()->orX();
-        $orX->addMultiple($conditions);
+        $booleanExpression->addMultiple($conditions);
 
-        $this->qb->andWhere($orX);
+        $this->qb->andWhere($booleanExpression);
         $this->setParameter($this->paramInt, $data);
     }
 
@@ -158,21 +168,19 @@ abstract class FilterManager
     }
 
     /**
+     * Build a Filter with fuzzy matching
+     *
      * @param $data
      * @param $key
      */
-    private function keywordBuilder($data, $keys)
+    private function keywordBuilder($data, $keys, Composite $booleanExpression)
     {
-        if (is_array($keys)) {
-            $conditions = $this->buildMultipleConditions($data, $keys);
-        } else {
-            $conditions = $this->buildSingleConditions($data, $keys);
-        }
+        $conditions = (is_array($keys))
+            ? $this->buildMultipleConditions($data, $keys)
+            : $this->buildSingleConditions($data, $keys);
 
-        $orX = $this->qb->expr()->orX();
-        $orX->addMultiple($conditions);
-
-        $this->qb->andWhere($orX);
+        $booleanExpression->addMultiple($conditions);
+        $this->qb->andWhere($booleanExpression);
     }
 
     private function buildMultipleConditions($data, $keys)
@@ -265,6 +273,8 @@ abstract class FilterManager
     }
 
     /**
+     * Build a `date` filter
+     *
      * @param $data
      * @param $key
      * @throws \Exception
@@ -315,6 +325,22 @@ abstract class FilterManager
     }
 
     /**
+     * Build either an `AND` or an `OR` expression based on the Filter config,
+     * default to `OR`
+     *
+     * @param  string $key
+     * @return Expr
+     */
+    private function buildBooleanExpression($key)
+    {
+        $info = $this->accepted[$key];
+
+        return (array_key_exists('booleanOperator', $info) && $info['booleanOperator'] === self::BOOLEAN_AND)
+            ? $this->qb->expr()->andX()
+            : $this->qb->expr()->orX();
+    }
+
+    /**
      * @param $key
      * @param $value
      */
@@ -335,6 +361,11 @@ abstract class FilterManager
         return $d && $d->format('m/d/Y') == $date;
     }
 
+    /**
+     * Add an SQL include to later be used in filtering
+     *
+     * @param string $include
+     */
     private function addInclude($include)
     {
         if (!$this->hasInclude($include)) {
@@ -348,6 +379,12 @@ abstract class FilterManager
         $this->qb->leftJoin('e.' . $include, $include);
     }
 
+    /**
+     * Determine if an include has already been added
+     *
+     * @param  string $include
+     * @return boolean
+     */
     private function includeExists($include)
     {
         foreach ($this->qb->getDQLPart('join') as $joins) {
@@ -361,10 +398,15 @@ abstract class FilterManager
         return false;
     }
 
+    /**
+     * Determine if
+     *
+     * @param  [type]  $include [description]
+     * @return boolean          [description]
+     */
     protected function hasInclude($include)
     {
         $associations = $this->getClassMetadata()->getAssociationMappings();
-
         return array_key_exists($include, $associations);
     }
 
