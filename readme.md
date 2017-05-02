@@ -18,7 +18,7 @@ GET /articles?include=author,comments.author&page[number]=3&page[size]=20&filter
 use Giadc\JsonApiRequest\Requests\RequestParams;
 
 // By default it creates params from Globals 
-$request = new RequestParams;
+$request = new RequestParams();
 
 // Get Includes
 $request->getIncludes()->toArray();
