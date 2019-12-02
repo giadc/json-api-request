@@ -1,12 +1,13 @@
 <?php
 
 use Giadc\JsonApiRequest\Requests\Filters;
+use PHPUnit\Framework\TestCase;
 
-class ProductTest extends PHPUnit_Framework_TestCase
+class ProductTest extends TestCase
 {
     private $filters;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->filters = new Filters([
             'name' => 'Example name',

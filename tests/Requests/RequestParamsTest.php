@@ -4,17 +4,17 @@ use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
 use Giadc\JsonApiRequest\Requests\RequestParams;
 use Giadc\JsonApiRequest\Requests\Sorting;
-use Mockery as m;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use PHPUnit\Framework\TestCase;
 
-class RequestParamsTest extends PHPUnit_Framework_TestCase
+class RequestParamsTest extends TestCase
 {
     private $requestParams;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $request = Request::create('http://test.com/articles'
+        $request = Request::create(
+            'http://test.com/articles'
             . '?include=author,comments.author'
             . '&page[number]=3&page[size]=20'
             . '&filter[author]=frank'
