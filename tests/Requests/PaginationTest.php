@@ -1,12 +1,13 @@
 <?php
 
 use Giadc\JsonApiRequest\Requests\Pagination;
+use PHPUnit\Framework\TestCase;
 
-class PaginationTest extends PHPUnit_Framework_TestCase
+class PaginationTest extends TestCase
 {
     private $pagination;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->pagination = new Pagination(2, 20);
     }

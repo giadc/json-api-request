@@ -1,12 +1,13 @@
 <?php
 
 use Giadc\JsonApiRequest\Requests\Sorting;
+use PHPUnit\Framework\TestCase;
 
-class SortingTest extends PHPUnit_Framework_TestCase
+class SortingTest extends TestCase
 {
     private $sorting;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->sorting = new Sorting('width,-height');
     }

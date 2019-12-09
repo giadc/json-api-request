@@ -1,12 +1,13 @@
 <?php
 
 use Giadc\JsonApiRequest\Requests\Includes;
+use PHPUnit\Framework\TestCase;
 
-class IncludesTest extends PHPUnit_Framework_TestCase
+class IncludesTest extends TestCase
 {
     private $includes;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->includes = new Includes(['first', 'second']);
     }
