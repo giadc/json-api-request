@@ -79,6 +79,6 @@ class Includes implements RequestInterface
      */
     public function toString()
     {
-        return implode($this->container, ',');
+        return implode(',', $this->container);
     }
 }

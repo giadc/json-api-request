@@ -90,7 +90,7 @@ class RequestParams
             $this->getFiltersDetails()->getQueryString(),
         ];
 
-        return implode(array_filter($array), '&');
+        return implode(',', array_filter($array));
     }
 
     /**
