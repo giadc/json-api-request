@@ -1,22 +1,52 @@
 <?php
+
 namespace Giadc\JsonApiRequest\Requests;
+
+use Giadc\JsonApiRequest\Exceptions\InvalidSortDirectionsException;
+use Symfony\Component\HttpFoundation\Request;
 
 class Sorting implements RequestInterface
 {
-    private $container = array();
+    const VALID_DIRECTIONS = ['ASC', 'DESC'];
 
-    public function __construct($sorting)
+    private array $container = [];
+
+    public function __construct(?string $sorting)
     {
-        $this->setSorting($sorting);
+        if (is_string($sorting)) {
+            $this->setWithString($sorting);
+        }
+    }
+
+    public static function fromRequest(Request $request): self
+    {
+        $sort = $request->query->get('sort');
+        return new self($sort);
+    }
+
+    public function add(string $field, string $direction = 'ASC'): void
+    {
+        if (!in_array(strtoupper($direction), self::VALID_DIRECTIONS)) {
+            throw new InvalidSortDirectionsException($field, $direction);
+        }
+
+        // If Field already exists..remove it.
+        $this->container = array_filter($this->container, function ($sortingField) use ($field) {
+            return $sortingField['field'] !== $field;
+        });
+
+        $this->container[] = [
+            'field' => $field,
+            'direction' => strtoupper($direction)
+        ];
     }
 
     /**
      * Set the sorting
-     *
-     * @param string $sorting
      */
-    public function setSorting($sorting)
+    public function setWithString(string $sorting): void
     {
+        // reset Container
         $this->container = [];
 
         if (empty($sorting) && !is_string($sorting)) {

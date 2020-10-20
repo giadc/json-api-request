@@ -1,4 +1,7 @@
 <?php
+
+use Giadc\JsonApiRequest\Requests\Excludes;
+use Giadc\JsonApiRequest\Requests\Fields;
 use Giadc\JsonApiRequest\Requests\Filters;
 use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
@@ -15,16 +18,18 @@ class RequestParamsTest extends TestCase
     {
         $request = Request::create(
             'http://test.com/articles'
-            . '?include=author,comments.author'
-            . '&page[number]=3&page[size]=20'
-            . '&filter[author]=frank'
-            . '&sort=-created,title'
+                . '?include=author,comments.author'
+                . '&page[number]=3&page[size]=20'
+                . '&filter[author]=frank'
+                . '&sort=-created,title'
+                . '&fields[author]=name'
+                . '&excludes[articles]=body,updatedAt'
         );
 
         $this->requestParams = new RequestParams($request);
     }
 
-    public function test_it_returns_the_includes()
+    public function test_it_returns_the_includes(): void
     {
         $expected = ['author', 'comments.author'];
         $includes = $this->requestParams->getIncludes();
@@ -33,7 +38,7 @@ class RequestParamsTest extends TestCase
         $this->assertEquals($expected, $includes->toArray());
     }
 
-    public function test_it_returns_the_pagination()
+    public function test_it_returns_the_pagination(): void
     {
         $pagination = $this->requestParams->getPageDetails();
 
@@ -42,7 +47,7 @@ class RequestParamsTest extends TestCase
         $this->assertEquals(20, $pagination->getPageSize());
     }
 
-    public function test_it_returns_the_sorting()
+    public function test_it_returns_the_sorting(): void
     {
         $expected = [
             ['field' => 'created', 'direction' => 'DESC'],
@@ -55,12 +60,30 @@ class RequestParamsTest extends TestCase
         $this->assertEquals($expected, $sorting->toArray());
     }
 
-    public function test_it_returns_the_filters()
+    public function test_it_returns_the_filters(): void
     {
         $expected = ['author' => ['frank']];
         $filters  = $this->requestParams->getFiltersDetails();
 
         $this->assertInstanceOf(Filters::class, $filters);
         $this->assertEquals($expected, $filters->toArray());
+    }
+
+    public function test_it_returns_the_fields(): void
+    {
+        $expected = ['author' => ['name']];
+        $fields  = $this->requestParams->getFields();
+
+        $this->assertInstanceOf(Fields::class, $fields);
+        $this->assertEquals($expected, $fields->toArray());
+    }
+
+    public function test_it_returns_the_excludes(): void
+    {
+        $expected = ['articles' => ['body', 'updatedAt']];
+        $excludes  = $this->requestParams->getExcludes();
+
+        $this->assertInstanceOf(Excludes::class, $excludes);
+        $this->assertEquals($expected, $excludes->toArray());
     }
 }

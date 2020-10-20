@@ -1,4 +1,5 @@
 <?php
+
 namespace Giadc\JsonApiRequest\Requests;
 
 use Giadc\JsonApiRequest\Requests\Filters;
@@ -9,85 +10,85 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RequestParams
 {
-    private $request;
+    private Request $request;
+
+    private Excludes $excludes;
+
+    private Fields $fields;
+
+    private Includes $includes;
+
+    private Pagination $pagination;
+
+    private Sorting $sorting;
+
+    private Filters $filters;
 
     public function __construct($request = null)
     {
         $this->request = (is_null($request))
             ? Request::createFromGlobals()
             : $request;
+
+        $this->excludes = Excludes::fromRequest($this->request);
+        $this->fields = Fields::fromRequest($this->request);
+        $this->includes = Includes::fromRequest($this->request);
+        $this->pagination = Pagination::fromRequest($this->request);
+        $this->sorting = Sorting::fromRequest($this->request);
+        $this->filters = Filters::fromRequest($this->request);
     }
 
-    /**
-     * Get Includes
-     *
-     * @return Includes
-     */
-    public function getIncludes()
+    public function getExcludes(): Excludes
     {
-        $includes = $this->request->query->get('include');
-        return new Includes($includes);
+        return $this->excludes;
     }
 
-    /**
-     * Get Pagination
-     *
-     * @return Pagination
-     */
-    public function getPageDetails()
+    public function getFields(): Fields
     {
-        $page   = $this->request->query->get('page');
-        $number = isset($page['number']) ? $page['number'] : 1;
-        $size   = isset($page['size']) ? $page['size'] : null;
-
-        return new Pagination($number, $size);
+        return $this->fields;
     }
 
-    /**
-     * Get Sorting
-     *
-     * @return Sorting
-     */
-    public function getSortDetails()
+    public function getIncludes(): Includes
     {
-        $sort = $this->request->query->get('sort');
-        return new Sorting($sort);
+        return $this->includes;
     }
 
-    /**
-     * Get Filters
-     *
-     * @return Filters
-     */
-    public function getFiltersDetails()
+    public function getPageDetails(): Pagination
     {
-        $filters = $this->request->query->get('filter');
-        return new Filters($filters);
+        return $this->pagination;
+    }
+
+    public function getSortDetails(): Sorting
+    {
+        return $this->sorting;
+    }
+
+    public function getFiltersDetails(): Filters
+    {
+        return $this->filters;
     }
 
     /**
      * Get the current URI
-     *
-     * @return [type] [description]
      */
-    public function getUri()
+    public function getUri(): ?string
     {
-        return explode('?', $this->request->getUri())[0];
+        $uri = explode('?', $this->request->getUri());
+        return  is_array($uri) ? $uri[0] : null;
     }
 
     /**
      * Get combined query string
-     *
-     * @param  int $pageNumber
-     * @return string
      */
-    public function getQueryString($pageNumber = null)
+    public function getQueryString(int $pageNumber = null): string
     {
         $array = [
             $this->getPageDetails()->getQueryString($pageNumber),
             $this->getIncludes()->getQueryString(),
             $this->getSortDetails()->getQueryString(),
             $this->getFiltersDetails()->getQueryString(),
+            $this->getFields()->getQueryString(),
+            $this->getExcludes()->getQueryString(),
         ];
 
         return implode(',', array_filter($array));
@@ -98,7 +99,7 @@ class RequestParams
      *
      * @return array
      */
-    public function getFullPagination()
+    public function getFullPagination(): array
     {
         return [
             $this->getPageDetails(),

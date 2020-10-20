@@ -4,27 +4,25 @@ namespace Giadc\JsonApiRequest\Requests;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class Filters implements RequestInterface
+class Fields implements RequestInterface
 {
-    private $container = array();
+    private array $container = [];
 
-    public function __construct($filters = [])
+    public function __construct(?array $fields = [])
     {
-        $filters = $filters ?: [];
-
-        foreach ($filters as $key => $filter) {
-            $this->add($key, $filter);
+        foreach ($fields as $key => $field) {
+            $this->add($key, $field);
         }
     }
 
     public static function fromRequest(Request $request): self
     {
-        $filters = $request->query->get('filter');
-        return new self($filters);
+        $fields = $request->query->get('fields');
+        return new self($fields ?? []);
     }
 
     /**
-     * Add an additional filter
+     * Add an additional field
      *
      * @param string|array $value
      */
@@ -38,25 +36,25 @@ class Filters implements RequestInterface
     }
 
     /**
-     * Convert Filters to a string
+     * Convert Fields to a string
      */
     public function toString(): string
     {
         $params = '';
 
-        foreach ($this->container as $key => $filter) {
+        foreach ($this->container as $key => $field) {
             if (!$params == '') {
                 $params .= '&';
             }
 
-            $params .= "filter[$key]=" . implode(',', $filter);
+            $params .= "fields[$key]=" . implode(',', $field);
         };
 
         return $params;
     }
 
     /**
-     * Get Filters as a params array
+     * Get Fields as a params array
      */
     public function getParamsArray(): array
     {
@@ -64,7 +62,7 @@ class Filters implements RequestInterface
     }
 
     /**
-     * Get Filters as query string fragment
+     * Get Fields as query string fragment
      */
     public function getQueryString(): string
     {
@@ -72,7 +70,7 @@ class Filters implements RequestInterface
     }
 
     /**
-     * Get Filters as a multi-dimensional array
+     * Get Fields as a multi-dimensional array
      */
     public function toArray(): array
     {

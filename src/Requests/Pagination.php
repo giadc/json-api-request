@@ -1,18 +1,28 @@
 <?php
+
 namespace Giadc\JsonApiRequest\Requests;
+
+use Symfony\Component\HttpFoundation\Request;
 
 class Pagination implements RequestInterface
 {
-    /** @var int */
-    private $number;
+    private int $number;
 
-    /** @var int */
-    private $size;
+    private ?int $size;
 
-    public function __construct($number = 1, $size = null)
+    public function __construct(int $number = 1, int $size = null)
     {
         $this->number = $number;
         $this->size   = $size;
+    }
+
+    public static function fromRequest(Request $request): self
+    {
+        $page   = $request->query->get('page');
+        $number = isset($page['number']) ? $page['number'] : 1;
+        $size   = isset($page['size']) ? $page['size'] : null;
+
+        return new self($number, $size);
     }
 
     /**
@@ -48,7 +58,7 @@ class Pagination implements RequestInterface
 
         return ($this->size > $this->getMaxSize())
             ? $this->getMaxSize()
-            : (integer) $this->size;
+            : (int) $this->size;
     }
 
     /**

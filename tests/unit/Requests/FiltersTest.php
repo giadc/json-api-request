@@ -3,7 +3,7 @@
 use Giadc\JsonApiRequest\Requests\Filters;
 use PHPUnit\Framework\TestCase;
 
-class ProductTest extends TestCase
+class FiltersTest extends TestCase
 {
     private $filters;
 
@@ -40,7 +40,7 @@ class ProductTest extends TestCase
             'gender' => ['Attack Helicopter'],
         ];
 
-        $this->filters->addFilter('gender', 'Attack Helicopter');
+        $this->filters->add('gender', 'Attack Helicopter');
         $this->assertEquals($expected, $this->filters->toArray());
     }
 }
