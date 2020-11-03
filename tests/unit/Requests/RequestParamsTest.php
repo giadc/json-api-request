@@ -86,4 +86,14 @@ class RequestParamsTest extends TestCase
         $this->assertInstanceOf(Excludes::class, $excludes);
         $this->assertEquals($expected, $excludes->toArray());
     }
+
+    public function test_it_can_create_and_modify_from_empty_request(): void
+    {
+        $params = RequestParams::fromEmptyRequest();
+
+        $params->getFields()->add('campaigns', ['name', 'updatedBy', 'advertiser']);
+
+        $this->assertInstanceOf(RequestParams::class, $params);
+        $this->assertEquals(['name', 'updatedBy', 'advertiser'], $params->getFields()->get('campaigns'));
+    }
 }

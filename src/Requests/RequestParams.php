@@ -38,6 +38,11 @@ class RequestParams
         $this->filters = Filters::fromRequest($this->request);
     }
 
+    public static function fromEmptyRequest()
+    {
+        return new self(new Request());
+    }
+
     public function getExcludes(): Excludes
     {
         return $this->excludes;
