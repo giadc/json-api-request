@@ -26,7 +26,7 @@ class RequestParamsTest extends TestCase
                 . '&excludes[articles]=body,updatedAt'
         );
 
-        $this->requestParams = new RequestParams($request);
+        $this->requestParams = RequestParams::fromRequest($request);
     }
 
     public function test_it_returns_the_includes(): void
@@ -95,5 +95,31 @@ class RequestParamsTest extends TestCase
 
         $this->assertInstanceOf(RequestParams::class, $params);
         $this->assertEquals(['name', 'updatedBy', 'advertiser'], $params->getFields()->get('campaigns'));
+    }
+
+    public function test_it_build_from_array(): void
+    {
+        $params = RequestParams::fromArray([
+            'filters' => [
+                'author' => 'frank',
+            ],
+            'pagination' => [
+                'number' => 3,
+                'size' => 20,
+            ],
+            'includes' => ['author'],
+            'excludes' => [
+                'campaigns' => ['name'],
+                'articles' => ['body', 'updatedAt'],
+            ],
+            'sorting' => '-name',
+        ]);
+
+
+        $this->assertInstanceOf(RequestParams::class, $params);
+        $this->assertEquals(
+            'page[number]=3&page[size]=20,include=author,sort=-name,filter[author]=frank,excludes[campaigns]=name&excludes[articles]=body,updatedAt',
+            $params->getQueryString()
+        );
     }
 }

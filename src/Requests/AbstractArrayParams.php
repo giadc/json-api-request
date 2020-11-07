@@ -23,10 +23,12 @@ abstract class AbstractArrayParams implements RequestInterface
     public function add(string $key, $value): void
     {
         if (is_string($value)) {
-            $value = explode(',', $value);
+            $value = trim($value) == '' ? [] : explode(',', $value);
         }
 
-        $this->container[$key] = $value;
+        $this->container[$key] = array_filter($value, function ($item) {
+            return !(is_string($item) && trim($item) == '');
+        });
     }
 
     public function has(string $key): bool

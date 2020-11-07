@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [unreleased]
 ### Added
 - Added new options, `fields` and `excludes`.
+- RequestParams may now be built from provided array.
 
 ### Changed
 - RequestParams now allows for the modification of fields.

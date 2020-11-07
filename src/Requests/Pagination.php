@@ -16,6 +16,17 @@ class Pagination implements RequestInterface
         $this->size   = $size;
     }
 
+    /**
+     * @param array{number:int, size: int} $page
+     */
+    public static function fromArray(array $page): self
+    {
+        $number = isset($page['number']) ? $page['number'] : 1;
+        $size   = isset($page['size']) ? $page['size'] : null;
+
+        return new self($number, $size);
+    }
+
     public static function fromRequest(Request $request): self
     {
         $page   = $request->query->get('page');
