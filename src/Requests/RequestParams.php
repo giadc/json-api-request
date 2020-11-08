@@ -43,7 +43,7 @@ class RequestParams
 
     public function __construct($input = null)
     {
-        if (!is_array($input) && !$input instanceof Request) {
+        if (!is_array($input) && !$input instanceof Request && !is_null($input)) {
             throw new \InvalidArgumentException(sprintf(
                 'RequestParams expects `$input` to be an instance of %s, or have type of null/array. %s given.',
                 Request::class,
