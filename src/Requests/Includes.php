@@ -1,6 +1,8 @@
 <?php
 namespace Giadc\JsonApiRequest\Requests;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class Includes implements RequestInterface
 {
     private $container = array();
@@ -12,6 +14,12 @@ class Includes implements RequestInterface
         }
 
         $this->container = $includes;
+    }
+
+    public static function fromRequest(Request $request): self
+    {
+        $includes = $request->query->get('include');
+        return new self($includes);
     }
 
     /**

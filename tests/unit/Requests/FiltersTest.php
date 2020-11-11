@@ -3,7 +3,7 @@
 use Giadc\JsonApiRequest\Requests\Filters;
 use PHPUnit\Framework\TestCase;
 
-class ProductTest extends TestCase
+class FiltersTest extends TestCase
 {
     private $filters;
 
@@ -40,7 +40,35 @@ class ProductTest extends TestCase
             'gender' => ['Attack Helicopter'],
         ];
 
-        $this->filters->addFilter('gender', 'Attack Helicopter');
+        $this->filters->add('gender', 'Attack Helicopter');
+        $this->assertEquals($expected, $this->filters->toArray());
+    }
+
+    public function test_it_handles_empty_strings_correctly()
+    {
+        $expected = [
+            'name' => ['Example name'],
+            'city' => ['Indianapolis', 'Des Moines'],
+            'gender' => [],
+            'age' => [],
+        ];
+
+        $this->filters->add('gender', '');
+        $this->filters->add('age', '  ');
+        $this->assertEquals($expected, $this->filters->toArray());
+    }
+
+    public function test_it_filters_out_nested_empty_strings()
+    {
+        $expected = [
+            'name' => ['Example name'],
+            'city' => ['Indianapolis', 'Des Moines'],
+            'gender' => [],
+            'age' => [],
+        ];
+
+        $this->filters->add('gender', ['']);
+        $this->filters->add('age', [' ', '     ']);
         $this->assertEquals($expected, $this->filters->toArray());
     }
 }

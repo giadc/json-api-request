@@ -12,7 +12,7 @@ Request Params provides objects for pulling/modifying HttpFoundation Requests th
 
 Example: 
 ```http
-GET /articles?include=author,comments.author&page[number]=3&page[size]=20&filter[author]=frank&sort=-created,title
+GET /articles?include=author,comments.author&page[number]=3&page[size]=20&filter[author]=frank&sort=-created,title&fields[author]=name,age
 ```
 ```php
 use Giadc\JsonApiRequest\Requests\RequestParams;
@@ -39,6 +39,10 @@ $request->getFiltersDetails()->toArray();
 // Get Full Pagination
 $request->getFullPagination();
 // outputs: [{Pagination}, {Includes}, {Sorting}, {Filters}]
+
+// Get Fields
+$request->getFields()->toArray();
+// outputs: ['author' => ['name', 'age']]
 ```
 
 ### Request Objects
@@ -78,4 +82,20 @@ $filters = new Filters(['author' => 'frank');
 $filters->addFilter('author', 'bob');
 $filters->getQueryString();
 //outputs: 'filter[author]=frank,bob'
+```
+
+#### Excludes
+```php
+$filters = new Excludes(['author' => 'country');
+$filters->add('author', 'age');
+$filters->getQueryString();
+//outputs: 'excludes[author]=country,age'
+```
+
+#### Fields
+```php
+$filters = new Fields(['author' => 'name');
+$filters->add('author', 'age');
+$filters->getQueryString();
+//outputs: 'fields[author]=name,age'
 ```
