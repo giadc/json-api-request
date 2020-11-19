@@ -59,7 +59,7 @@ class Pagination implements RequestInterface
     /**
      * Get the page size
      *
-     * @return string
+     * @return int
      */
     public function getPageSize()
     {
