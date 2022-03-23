@@ -46,7 +46,6 @@ abstract class AbstractArrayParams implements RequestInterface
         return empty($this->container);
     }
 
-
     /**
      * Convert Items to a string.
      */

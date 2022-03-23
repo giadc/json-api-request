@@ -29,7 +29,7 @@ class Pagination implements RequestInterface
 
     public static function fromRequest(Request $request): self
     {
-        $page   = $request->query->get('page');
+        $page   = $request->query->all('page');
         $number = isset($page['number']) ? $page['number'] : 1;
         $size   = isset($page['size']) ? $page['size'] : null;
 

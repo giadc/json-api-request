@@ -1,4 +1,5 @@
 <?php
+
 namespace Giadc\JsonApiRequest\Requests;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -10,7 +11,7 @@ class Includes implements RequestInterface
     public function __construct($includes = [])
     {
         if (!is_array($includes)) {
-            $includes = explode(',', $includes);
+            $includes = is_string($includes) ? explode(',', $includes) : [];
         }
 
         $this->container = $includes;
