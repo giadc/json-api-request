@@ -17,7 +17,7 @@ class Pagination implements RequestInterface
     }
 
     /**
-     * @param array{number:int, size: int} $page
+     * @phpstan-param array{number:int, size: int} $page
      */
     public static function fromArray(array $page): self
     {
@@ -38,30 +38,24 @@ class Pagination implements RequestInterface
 
     /**
      * Get the current page number
-     *
-     * @return int
      */
-    public function getPageNumber()
+    public function getPageNumber(): int
     {
         return $this->number ?: 1;
     }
 
     /**
      * Get page offset (starting at zero)
-     *
-     * @return int
      */
-    public function getOffset()
+    public function getOffset(): int
     {
         return $this->getPageNumber() - 1;
     }
 
     /**
      * Get the page size
-     *
-     * @return int
      */
-    public function getPageSize()
+    public function getPageSize(): int
     {
         if ($this->size == null) {
             return $this->getDefaultSize();
@@ -74,11 +68,8 @@ class Pagination implements RequestInterface
 
     /**
      * Get Pagination as a param array for the given page number
-     *
-     * @param  integer $pageNumber
-     * @return array
      */
-    public function getParamsArray($pageNumber = null)
+    public function getParamsArray(int $pageNumber = null): array
     {
         return [
             'page' => array_filter(
@@ -92,37 +83,28 @@ class Pagination implements RequestInterface
 
     /**
      * Get Pagination as a query string fragment for the given page
-     *
-     * @param  int $number
-     * @return string
      */
-    public function getQueryString($number = null)
+    public function getQueryString(int $number = null): string
     {
-        $number = $number == null ? $this->getPageNumber() : $number;
-
         return sprintf(
             'page[number]=%d&page[size]=%d',
-            $number,
+            $number ?: $this->getPageNumber(),
             $this->getPageSize()
         );
     }
 
     /**
      * Get the default page size
-     *
-     * @return int
      */
-    private function getDefaultSize()
+    private function getDefaultSize(): int
     {
         return getenv('PAGINATION_DEFAULT') ?: 15;
     }
 
     /**
      * Get the maximum page size
-     *
-     * @return int
      */
-    private function getMaxSize()
+    private function getMaxSize(): int
     {
         return getenv('PAGINATION_MAX') ?: 25;
     }
