@@ -41,7 +41,7 @@ class RequestParams
 
     private Filters $filters;
 
-    public function __construct($input = null)
+    public function __construct(mixed $input = null)
     {
         if (!is_array($input) && !$input instanceof Request && !is_null($input)) {
             throw new \InvalidArgumentException(sprintf(
@@ -66,7 +66,7 @@ class RequestParams
         return new self($request);
     }
 
-    public static function fromEmptyRequest()
+    public static function fromEmptyRequest(): self
     {
         return new self(new Request());
     }
@@ -145,7 +145,7 @@ class RequestParams
     /**
      * Ensures no incorrect RequestParameter types have been provided.
      *
-     * @param array<string, mixed> $parameters
+     * @phpstan-param array<string, mixed> $parameters
      */
     private function assertValidKeys(array $parameters): void
     {
@@ -163,10 +163,6 @@ class RequestParams
      * `include` instead of `includes`
      * `filter` instead of `filters`
      * `page` instead of `pagination`
-     *
-     * @param array $parameters
-     *
-     * @return array
      */
     private function translateAliases(array $parameters): array
     {
@@ -200,7 +196,7 @@ class RequestParams
         $this->filters = new Filters($parameters['filters'] ?? []);
     }
 
-    private function buildParamsFromRequest($input)
+    private function buildParamsFromRequest(?Request $input)
     {
         $this->request = (is_null($input))
             ? Request::createFromGlobals()

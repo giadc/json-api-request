@@ -7,7 +7,7 @@ use Throwable;
 
 class InvalidSortDirectionsException extends Exception
 {
-    public function __construct(string $field, string $direction, $code = 0, Throwable $previous = null)
+    public function __construct(string $field, string $direction, int $code = 0, Throwable $previous = null)
     {
         $message = sprintf(
             'Invalid direction, %s, for %s',

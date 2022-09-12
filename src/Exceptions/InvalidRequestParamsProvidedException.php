@@ -8,7 +8,7 @@ use Throwable;
 
 class InvalidRequestParamsProvidedException extends Exception
 {
-    public function __construct(array $invalidKeys, $code = 0, Throwable $previous = null)
+    public function __construct(array $invalidKeys, int $code = 0, Throwable $previous = null)
     {
         $message = sprintf(
             'Invalid Criteria: %s. Valid keys are %s.',

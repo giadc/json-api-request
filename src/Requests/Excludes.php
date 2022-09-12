@@ -13,7 +13,7 @@ class Excludes extends AbstractArrayParams
 
     public static function fromRequest(Request $request): self
     {
-        $items = $request->query->get(static::paramKey());
+        $items = $request->query->all(static::paramKey());
 
         return new self($items ?? []);
     }

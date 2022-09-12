@@ -1,4 +1,5 @@
 <?php
+
 namespace Giadc\JsonApiRequest\Requests;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -10,6 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 interface RequestInterface
 {
     public static function fromRequest(Request $request): self;
-    public function getParamsArray();
-    public function getQueryString();
+    public function getParamsArray(): array;
+    public function getQueryString(): string;
 }

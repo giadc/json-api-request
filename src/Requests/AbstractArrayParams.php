@@ -17,10 +17,8 @@ abstract class AbstractArrayParams implements RequestInterface
 
     /**
      * Add an additional item.
-     *
-     * @param string|array $value
      */
-    public function add(string $key, $value): void
+    public function add(string $key, string|array $value): void
     {
         if (is_string($value)) {
             $value = trim($value) == '' ? [] : explode(',', $value);
@@ -45,7 +43,6 @@ abstract class AbstractArrayParams implements RequestInterface
     {
         return empty($this->container);
     }
-
 
     /**
      * Convert Items to a string.

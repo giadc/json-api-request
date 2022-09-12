@@ -62,10 +62,8 @@ class Sorting implements RequestInterface
 
     /**
      * Process an individual field
-     *
-     * @param  array $fields
      */
-    private function processFields($fields)
+    private function processFields(array $fields): void
     {
         foreach ($fields as &$field) {
             $direction = 'ASC';
@@ -81,10 +79,8 @@ class Sorting implements RequestInterface
 
     /**
      * Get Sorting as an array
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         if (is_null($this->container)) {
             return [];
@@ -95,10 +91,8 @@ class Sorting implements RequestInterface
 
     /**
      * Get Sorting as a params array
-     *
-     * @return array
      */
-    public function getParamsArray()
+    public function getParamsArray(): array
     {
         if ($this->container == null || (count($this->container) == 1 && $this->container[0] == null)) {
             return [];
@@ -113,10 +107,8 @@ class Sorting implements RequestInterface
 
     /**
      * Get Sorting as a query string fragment
-     *
-     * @return string
      */
-    public function getQueryString()
+    public function getQueryString(): string
     {
         if (count(array_filter($this->container)) == 0) {
             return '';
@@ -127,10 +119,8 @@ class Sorting implements RequestInterface
 
     /**
      * Get Sorting as a comma-separated list
-     *
-     * @return string
      */
-    private function toString()
+    private function toString(): string
     {
         $fields = array_map(function ($field) {
             $prefix = ($field['direction'] === 'DESC') ? '-' : '';
