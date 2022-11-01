@@ -192,7 +192,7 @@ class RequestParams
         $this->fields = new Fields($parameters['fields'] ?? []);
         $this->includes = new Includes($parameters['includes'] ?? []);
         $this->pagination = Pagination::fromArray($parameters['pagination'] ?? []);
-        $this->sorting = new Sorting($parameters['sorting'] ?? []);
+        $this->sorting = new Sorting($parameters['sorting'] ?? '');
         $this->filters = new Filters($parameters['filters'] ?? []);
     }
 
