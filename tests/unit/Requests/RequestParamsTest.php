@@ -118,7 +118,7 @@ class RequestParamsTest extends TestCase
 
         $this->assertInstanceOf(RequestParams::class, $params);
         $this->assertEquals(
-            'page[number]=3&page[size]=20,include=author,sort=-name,filter[author]=frank,excludes[campaigns]=name&excludes[articles]=body,updatedAt',
+            'page[number]=3&page[size]=20&include=author&sort=-name&filter[author]=frank&excludes[campaigns]=name&excludes[articles]=body,updatedAt',
             $params->getQueryString()
         );
     }

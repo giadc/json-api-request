@@ -124,7 +124,7 @@ class RequestParams
             $this->getExcludes()->getQueryString(),
         ];
 
-        return implode(',', array_filter($array));
+        return implode('&', array_filter($array));
     }
 
     /**
