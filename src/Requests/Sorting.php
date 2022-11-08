@@ -13,7 +13,7 @@ class Sorting implements RequestInterface
 
     public function __construct(?string $sorting)
     {
-        if (is_string($sorting)) {
+        if (is_string($sorting) && strlen($sorting) > 0) {
             $this->setWithString($sorting);
         }
     }
@@ -49,7 +49,7 @@ class Sorting implements RequestInterface
         // reset Container
         $this->container = [];
 
-        if (empty($sorting) && !is_string($sorting)) {
+        if (!is_string($sorting) || strlen($sorting) === 0) {
             return;
         }
 
