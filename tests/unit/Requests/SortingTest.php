@@ -56,4 +56,14 @@ class SortingTest extends TestCase
 
         $this->assertEqualsCanonicalizing($expected, $this->sorting->toArray());
     }
+
+    public function test_it_wont_error_when_provided_an_empty_string(): void
+    {
+        $sorting = new Sorting('');
+        $this->assertEquals($sorting->getQueryString(), '');
+
+
+        $sorting->setWithString('');
+        $this->assertEquals($sorting->getQueryString(), '');
+    }
 }
